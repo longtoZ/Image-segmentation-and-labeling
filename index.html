@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="./uicons_rounded.css">
+        <title>Image project</title>
+    </head>
+    <body>
+        <header id="header-container">
+            <h1>Image <span class="stroke-text">segmentation</span> and <span class="stroke-text">labeling</span></h1>
+            <h2>Low-Mid level Computer Vision appliance using <span class="javascript-text">Javascript</span></h2>
+            <p>
+                The website serves as a personal project with the goal of offering a straightforward and user-friendly tool for image segmentation and labeling. 
+                It is developed utilizing vanilla Javascript, HTML5, and CSS. 
+                Occasionally, the outcome may not meet expectations due to algorithm limitations and image complexity.
+                If you have any questions or suggestions, please feel free to contact me on <a href="https://github.com/longtoZ" target="_blank" style="color: #171717;">Github</a>.
+            </p>
+        </header>
+
+        <div id="img-upload-container">
+            <div style="display: flex; justify-content: center; height: 100%;">
+                <div class="img-upload">
+                    <div style="width: 100%; height: 100%; display: flex; justify-content: center; flex-direction: column; align-items: center;">
+                        <div class="drop-area">
+                            <p>
+                                <i class="fi fi-rr-cloud-upload-alt" style="font-size: 54px;"></i>
+                                <br>
+                                Drop image here or click to upload
+                            </p>
+                            <input type="file" class="file-elem" accept="image/*">
+                            <div class="gallery">
+                                <div class="image-container">
+                                    <img class="uploaded-image" crossorigin="anonymous" src="" alt="" style="display: none; width: 100%; height: 100%;">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="remove-button" style="display: none;">Remove</button>
+                    </div>
+                </div>
+                <div class="img-setting">
+                    <div class="warning-message">
+                        <i class="fi fi-rr-info"></i>
+                        Please keep the tab focused while processing the image. This problem should be fixed in the future. <a href="https://stackoverflow.com/questions/15871942/how-do-browsers-pause-change-javascript-when-tab-or-window-is-not-active" target="_blank">Find out why</a>
+                    </div>
+                    <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+                        <div class="kmeans-setting">
+                            <h3>Color reduction options</h3>
+                            <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10%;">
+                                <div class="input-container">
+                                    <label for="input-field">Number of colors
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                The number of colors that will be used to represent the image
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="number-of-colors" class="input-field" type="number" value="16" min="1" step="1">
+                                    <div class="underline"></div>
+                                </div>
+                                <div class="input-container">
+                                    <label for="input-field">Maximum pixels
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                The area of the image calculated by width x height (in pixels). If the area of the image is greater than this value, the image will be resized to fit this value.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="maximum-pixels" class="input-field" type="number" value="1000000" min="1" step="1">
+                                    <div class="underline"></div>
+                                </div>
+                                <div class="input-container">
+                                    <label for="input-field">Maximum iterations
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                The maximum number of iterations that the execution of calculating centroids will run. The higher the number, the more accurate the result will be, but consume more time.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="maximum-iterations" class="input-field" type="number" value="50" min="1" step="1">
+                                    <div class="underline"></div>
+                                </div>
+                                <div class="input-container">
+                                    <label for="input-field">Random seed
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                The same seed will produce the same result. If the seed is not set, the result will be different each time the algorithm is executed.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="random-seed" class="input-field">
+                                    <div class="underline"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="removal-setting">
+                            <h3>Particles removal options</h3>
+                            <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10%;">
+                                <div class="input-container">
+                                    <label for="input-field">Sliding window size (pixels)
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                The size of the sliding window that will be used to calculate the density of particles in the image.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="sliding-size" class="input-field" type="number" value="3" min="3" max="9" step="1">
+                                    <div class="underline"></div>
+                                </div>
+                                <div class="input-container">
+                                    <label for="input-field">Maximum particles' size (pixels)
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                Particles (regions) whose size is less than this value will be merged with their major neighbor.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="maximum-particle-size" class="input-field" type="number" value="25" min="9" max="49" step="1">
+                                    <div class="underline"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="labeling-setting">
+                            <h3>Regions labeling options</h3>
+                            <div style="width: 100%; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10%;">
+                                <div class="input-container">
+                                    <label for="input-field">Isolate regions
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                Allow displaying each color's region separately.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <div class="option-field">
+                                        <div>
+                                            <input type="radio" name="isolate-regions" id="isolate-regions-on" value="on">
+                                            <label for="isolate-regions-on">On</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" name="isolate-regions" id="isolate-regions-off" value="off" checked>
+                                            <label for="isolate-regions-off">Off</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-container">
+                                    <label for="input-field">Alternative label
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                Automatically adjust label's size based on the region's size.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <div class="option-field">
+                                        <div>
+                                            <input type="radio" name="alternative-label" id="alternative-label-on" value="on">
+                                            <label for="alternative-label-on">On</label>
+                                        </div>
+                                        <div>
+                                            <input type="radio" name="alternative-label" id="alternative-label-off" value="off" checked>
+                                            <label for="alternative-label-off">Off</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="input-container">
+                                    <label for="input-field">Label color
+                                        <span class="tooltip-icon">
+                                            <i class="fi fi-rr-info"></i>
+                                            <span class="tooltip-text">
+                                                The text color (RGB) that will be used to label the regions.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input id="label-color" class="input-field" type="text" value="0,0,0">
+                                    <div class="underline"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button-container">
+                            <button class="reset-button">Reset</button>
+                            <button class="process-button">Process</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="step-container">
+            <div class="step-arrow" data-step="1">
+                <h2>1</h2>
+                <p>Color reduction</p>
+            </div>
+            <div class="step-arrow" data-step="2">
+                <h2>2</h2>
+                <p>Noise reduction</p>
+            </div>
+            <div class="step-arrow" data-step="3">
+                <h2>3</h2>
+                <p>Particle removal</p>
+            </div>
+            <div class="step-arrow" data-step="4">
+                <h2>4</h2>
+                <p>Region labeling</p>
+            </div>
+            <div class="step-arrow" data-step="4.5" style="display: none;">
+                <h2>4.5</h2>
+                <p>Region isolation</p>
+            </div>
+            <div class="step-arrow" data-step="5">
+                <h2>5</h2>
+                <p>Edge detection</p>
+            </div>
+        </div>
+
+        <div id="result-container">
+            <div class="">
+                <div class="image-panel">
+                    <div class="step-content" data-step="1"></div>
+                    <div class="step-content" data-step="2"></div>
+                    <div class="step-content" data-step="3"></div>
+                    <div class="step-content" data-step="4">
+                        <div class="poi-container"></div>
+                    </div>
+                    <div class="step-content" data-step="4.5">
+                    </div>
+                    <div class="step-content" data-step="5">
+                        <div class="poi-container"></div>
+                    </div>
+                </div>
+                <div class="command-panel">
+                    <div class="steps-list">
+                        <div data-step="1">
+                            <p>1. Color reduction</p>
+                            <span class="border"></span>
+                        </div>
+                        <div data-step="2">
+                            <p>2. Noise reduction</p>
+                            <span class="border"></span>
+                        </div>
+                        <div data-step="3">
+                            <p>3. Particle removal</p>
+                            <span class="border"></span>
+                        </div>
+                        <div data-step="4">
+                            <p>4. Region labeling</p>
+                            <span class="border"></span>
+                        </div>
+                        <div data-step="5">
+                            <p>5. Edge detection</p>
+                            <span class="border"></span>
+                        </div>
+                    </div>
+                    <div class="log-screen"></div>
+                </div>
+            </div>
+            <div class="color-panel">
+                <div class="layer" style="display: none;">
+                    <h3>Layers</h3>
+                    <div class="layer-container">
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; width: 100px; margin: 10px 0 40px 0;">
+                    <input type="checkbox" name="" id="show-label" checked>
+                    <label for="show-label">Show label</label>
+                </div>
+                <div class="proportion">
+                    <h3>Color proportion</h3>
+                    <div class="proportion-bar">
+                    </div>
+                </div>
+                <div class="color-list">
+                    <div class="color-list-container">
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <button class="download-button">
+                    <span>Download</span>
+                    <i class="fi fi-rr-angle-small-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a class="download-colored">Colored</a>
+                    <a class="download-unfilled">Unfilled</a>
+                </div>
+            </div>
+        </div>
+
+        <footer id="footer-container">
+            <p>
+                &copy; 2024 Image segmentation and labeling by <a href="https://github.com/longtoZ" target="_blank" style="color: #171717">LongTo</a>. All rights reserved. 
+            </p>
+        </footer>
+    </body>
+    <script src="./src/seedrandom.js" type="module"></script> 
+    <script src="./src/html2canvas.js" type="module"></script>
+    <script src="./script.js" type="module"></script>
+</html>
